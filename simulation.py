@@ -142,12 +142,12 @@ if __name__ == "__main__":
     
     model_id = p.loadURDF("./model/openx.urdf")
     # start = (0.286, 6.88214269644119e-22, 0.2045)
-    target_position = (-1,1,0)  # 末端目标位置
+    target_position = (-0.2,0.2,0)  # 末端目标位置
     #  Euler angles
-    target_orientation = p.getQuaternionFromEuler([0, 1, 1])  
+    # target_orientation = p.getQuaternionFromEuler([0, 1, 1])  
     
-    # move_to_point_line(model_id, target_position)
-    move_to_point(model_id, target_position)
+    move_to_point_line(model_id, target_position)
+    # move_to_point(model_id, target_position)
   
     while True:
         p.stepSimulation()
