@@ -1,6 +1,7 @@
 import pybullet as p
 import numpy as np
 import time
+from tools import set_joint_real, set_grasper_open_real
 
 DEBUG = True
 # DEBUG = False
@@ -44,7 +45,7 @@ def get_angle(model_id) -> list:
         angle_list.append(p.getJointState(model_id,i)[0])
     return angle_list
     
-def move_to_point_line(model_id, target_position, target_orientation=None, num_steps=100):
+def move_to_point_line(model_id, target_position, target_orientation=None, num_steps=15):
     if target_orientation is not None:
         print("target_orientation is not None, it's dengerous to use move_to_point_line.")
     
@@ -85,10 +86,11 @@ def move_to_point_line(model_id, target_position, target_orientation=None, num_s
             print(joint_angles)
         # 设置机器人关节角度
         set_angle(model_id, joint_angles)
+        set_joint_real(joint_angles[:5])
         
     return joint_angles
 
-def move_to_point(model_id, target_position, target_orientation=None, num_steps=100):
+def move_to_point(model_id, target_position, target_orientation=None, num_steps=15):
     
     ll = [-3.141592653589793, -1.5, -1.5, -1.7, -0.01, -0.01] 
     ul = [3.141592653589793, 1.5, 1.4, 1.97, 0.019, 0.019]
@@ -130,8 +132,9 @@ def move_to_point(model_id, target_position, target_orientation=None, num_steps=
 
 
 if __name__ == "__main__":
-    # p.connect(p.DIRECT)
-    p.connect(p.GUI)
+    set_joint_real([0,0,0,0,0])
+    p.connect(p.DIRECT)
+    #p.connect(p.GUI)
     p.setGravity(0, 0, 0)
     p.resetDebugVisualizerCamera(
         cameraDistance=1,  
@@ -142,20 +145,13 @@ if __name__ == "__main__":
     
     model_id = p.loadURDF("./model/openx.urdf")
     # start = (0.286, 6.88214269644119e-22, 0.2045)
-    target_position = (0.2,0.2,0.2)  # 末端目标位置
+    target_position = (0.2,0,0.1)  # 末端目标位置
     #  Euler angles
     # target_orientation = p.getQuaternionFromEuler([0, 1, 1])  
     
     move_to_point_line(model_id, target_position)
     # move_to_point(model_id, target_position)
-  
-    while True:
-        p.stepSimulation()
-                
-        if ord('i') in p.getKeyboardEvents():
-            model_info(model_id)  
-        if ord('q') in p.getKeyboardEvents():
-            break
-        
+    set_grasper_open_real(True)
+    set_grasper_open_real(False)
     # 清除物理引擎
     p.disconnect()

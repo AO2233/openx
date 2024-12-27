@@ -81,15 +81,24 @@ def set_joint_real(angle_list):
     angle_list = [trans2para(angle) for angle in angle_list]
     
     s1 = move_to_position(m11, angle_list[0])
-    s2 = move_to_position(m12, angle_list[1])
     s3 = move_to_position(m13, angle_list[2])
+    s2 = move_to_position(m12, angle_list[1])
     s4 = move_to_position(m14, angle_list[3])
     s5 = move_to_position(m15, angle_list[4])
     
     return s1, s2, s3, s4, s5
 
-
-
+def set_grasper_open_real(i: bool):
+    
+    ll = [-3.141592653589793, -1.5, -1.5, -1.7, -0.277*math.pi, -0.277*math.pi]
+    ul = [3.141592653589793, 1.5, 1.4, 1.97, 0.5*math.pi, 0.5*math.pi]
+    
+    m15 = Motor(15, trans2para(ll[4])+1, trans2para(ul[4])+1)
+    if i:
+        s5 = move_to_position(m15, trans2para(0.5*math.pi))
+    else:
+        s5 = move_to_position(m15, trans2para(-0.276*math.pi))
+    return s5
 
 if __name__ == "__main__":
     # MOTOR_ID = 15
