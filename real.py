@@ -1,9 +1,9 @@
-from tools import OpenX
+from tools import OpenX, PortManager, config
 from simulation import OpenX_sim
 import pybullet as p
 import time
 
-SIM=True
+SIM=False
 
 if __name__ == "__main__":
 
@@ -19,12 +19,9 @@ if __name__ == "__main__":
 
     model_id = p.loadURDF("./model/openx.urdf")
     arm_sim = OpenX_sim(model_id)
-    
-    
-    op = arm_sim.move_to_point_line((0.2, 0.2, 0.2))
-    # op = arm_sim.move_to_point((0.2, 0.2, 0.2))
-    
+        
     if SIM:
+        op = arm_sim.move_to_point_line((0.2, 0.2, 0.2))
         for joint_angle in op:
             arm_sim.set_joint_sim(joint_angle)
             p.stepSimulation()
@@ -34,18 +31,37 @@ if __name__ == "__main__":
         #     p.stepSimulation()
     
     if not SIM:
-        arm_real = OpenX()
+        port_manager=PortManager(config.DEVICENAME)
+        arm_real = OpenX(port_manager)   
         
+        arm_real.set_all_toqure(True) 
         init_joint = arm_real.get_joint_real()
         init_joint += [0]
         arm_sim.set_joint_sim(init_joint)
+        #start = (0.286, 6.88214269644119e-22, 0.21)
+
+        op = arm_sim.move_to_point_line((0.28, 0, 0.21))
+        for joint_angle in op:
+            arm_real.set_joint_real(joint_angle)
+            time.sleep(0.3)
         
-        op = arm_sim.move_to_point_line((0, 0, 0))
+        op = arm_sim.move_to_point_line((0.15, -0.2, 0.2))
         for joint_angle in op:
             arm_real.set_joint_real(joint_angle)
-        # arm_real.set_joint_real([0, 0, 0, 0, 0])
+            time.sleep(0.3)
+        
+        op = arm_sim.move_to_point_line((0.3, -0.2, 0.3))
         for joint_angle in op:
             arm_real.set_joint_real(joint_angle)
+            time.sleep(0.3)
+        
+        op = arm_sim.move_to_point_line(((0.28, 0, 0.21)))
+        for joint_angle in op:
+            arm_real.set_joint_real(joint_angle)
+            time.sleep(0.3)
+            
+     
+
         print(arm_real.get_joint_real())
                
     p.disconnect()

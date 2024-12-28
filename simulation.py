@@ -4,6 +4,7 @@ import pybullet as p
 
 # DEBUG = True
 DEBUG = False
+STEP=10
 
 class OpenX_sim:
     def __init__(self, model_id):
@@ -55,7 +56,7 @@ class OpenX_sim:
             angle_list.append(p.getJointState(self.model_id, i)[0])
         return angle_list
     
-    def move_to_point_line(self, target_position, target_orientation=None, num_steps=100):
+    def move_to_point_line(self, target_position, target_orientation=None, num_steps=STEP):
         if target_orientation is not None:
             print("target_orientation is not None, it's dengerous to use move_to_point_line.")
 
@@ -83,11 +84,10 @@ class OpenX_sim:
             )
             if DEBUG:
                 print(joint_angles)
-                
             operation_list.append(joint_angles)
         return operation_list
 
-    def move_to_point(self, target_position, target_orientation=None, num_steps=100):
+    def move_to_point(self, target_position, target_orientation=None, num_steps=STEP):
         assert target_position is not None
         startJointPositions = self.get_joint_sim()
         endJointPositions = p.calculateInverseKinematics(
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     arm_sim = OpenX_sim(model_id)
     
     # start = (0.286, 6.88214269644119e-22, 0.2045)
-    target_position = (0.2, 0.2, 0.2)  # end effector position
+    target_position = (0.2, 0.2, 0.21)  # end effector position
     #  Euler angles
     # target_orientation = p.getQuaternionFromEuler([0, 1, 1])
 
