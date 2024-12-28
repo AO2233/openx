@@ -35,7 +35,15 @@ if __name__ == "__main__":
     
     if not SIM:
         arm_real = OpenX()
-        arm_real.set_joint_real([0, 0, 0, 0, 0])
+        
+        init_joint = arm_real.get_joint_real()
+        init_joint += [0]
+        arm_sim.set_joint_sim(init_joint)
+        
+        op = arm_sim.move_to_point_line((0, 0, 0))
+        for joint_angle in op:
+            arm_real.set_joint_real(joint_angle)
+        # arm_real.set_joint_real([0, 0, 0, 0, 0])
         for joint_angle in op:
             arm_real.set_joint_real(joint_angle)
         print(arm_real.get_joint_real())
